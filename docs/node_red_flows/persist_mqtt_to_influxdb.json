@@ -1,0 +1,190 @@
+[
+  {
+    "id": "8eccab45.25b1e8",
+    "type": "tab",
+    "label": "Flow 2",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "e3a3c27b.8f9bf",
+    "type": "mqtt in",
+    "z": "8eccab45.25b1e8",
+    "name": "Temperature",
+    "topic": "ESP_Easy/BME280/Temperature",
+    "qos": "2",
+    "datatype": "auto",
+    "broker": "7445a825.f37be8",
+    "x": 230,
+    "y": 180,
+    "wires": [["eeffdab6.ff3df8"]]
+  },
+  {
+    "id": "41a67811.726198",
+    "type": "mqtt in",
+    "z": "8eccab45.25b1e8",
+    "name": "Humidity",
+    "topic": "ESP_Easy/BME280/Humidity",
+    "qos": "2",
+    "datatype": "auto",
+    "broker": "7445a825.f37be8",
+    "x": 220,
+    "y": 240,
+    "wires": [["13a41738.36b989"]]
+  },
+  {
+    "id": "5e9fa1f9.d5f56",
+    "type": "mqtt in",
+    "z": "8eccab45.25b1e8",
+    "name": "Pressure",
+    "topic": "ESP_Easy/BME280/Pressure",
+    "qos": "2",
+    "datatype": "auto",
+    "broker": "7445a825.f37be8",
+    "x": 220,
+    "y": 300,
+    "wires": [["a62c89ad.979c38"]]
+  },
+  {
+    "id": "2e2df462.fa160c",
+    "type": "influxdb out",
+    "z": "8eccab45.25b1e8",
+    "influxdb": "aa5f9aa2.036998",
+    "name": "Influx Out",
+    "measurement": "environment",
+    "precision": "",
+    "retentionPolicy": "",
+    "x": 1020,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "a62c89ad.979c38",
+    "type": "change",
+    "z": "8eccab45.25b1e8",
+    "name": "Set Measurement",
+    "rules": [
+      { "t": "set", "p": "value", "pt": "msg", "to": "pressure", "tot": "str" }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 430,
+    "y": 300,
+    "wires": [["98c1b0a.be6875"]]
+  },
+  {
+    "id": "13a41738.36b989",
+    "type": "change",
+    "z": "8eccab45.25b1e8",
+    "name": "Set Measurement",
+    "rules": [
+      { "t": "set", "p": "value", "pt": "msg", "to": "humidity", "tot": "str" }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 430,
+    "y": 240,
+    "wires": [["98c1b0a.be6875"]]
+  },
+  {
+    "id": "eeffdab6.ff3df8",
+    "type": "change",
+    "z": "8eccab45.25b1e8",
+    "name": "Set Measurement",
+    "rules": [
+      {
+        "t": "set",
+        "p": "value",
+        "pt": "msg",
+        "to": "temperature",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 430,
+    "y": 180,
+    "wires": [["98c1b0a.be6875"]]
+  },
+  {
+    "id": "3b3abd8d.86e272",
+    "type": "template",
+    "z": "8eccab45.25b1e8",
+    "name": "Create JSON",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "json",
+    "syntax": "mustache",
+    "template": "{\n    \"topic\": \"{{station}}/{{value}}\",\n    \"value\": {{payload}}\n}",
+    "output": "json",
+    "x": 810,
+    "y": 240,
+    "wires": [["2e2df462.fa160c"]]
+  },
+  {
+    "id": "98c1b0a.be6875",
+    "type": "change",
+    "z": "8eccab45.25b1e8",
+    "name": "Set station",
+    "rules": [
+      {
+        "t": "set",
+        "p": "station",
+        "pt": "msg",
+        "to": "ESP_Easy_0",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 650,
+    "y": 240,
+    "wires": [["3b3abd8d.86e272"]]
+  },
+  {
+    "id": "7445a825.f37be8",
+    "type": "mqtt-broker",
+    "z": "",
+    "name": "Docker Stack Mosquitto",
+    "broker": "mosquitto",
+    "port": "1883",
+    "clientid": "",
+    "usetls": false,
+    "compatmode": false,
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": ""
+  },
+  {
+    "id": "aa5f9aa2.036998",
+    "type": "influxdb",
+    "z": "",
+    "hostname": "influxdb",
+    "port": "8086",
+    "protocol": "http",
+    "database": "influxdb",
+    "name": "Docker Stack InfluxDB",
+    "usetls": false,
+    "tls": ""
+  }
+]

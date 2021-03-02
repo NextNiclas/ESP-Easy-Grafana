@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  mosquitto:
+    build: ./container/mosquitto
+    image: mosquitto:custom
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+  nodered:
+    build: ./container/nodered
+    image: "nodered:custom"
+    environment:
+      - NODE_RED_CREDENTIAL_SECRET=my_secret_to_encrypt
+    volumes:
+      - nodered:/data
+    ports:
+      - "1880:1880"
+    links:
+      - influxdb
+      - mosquitto
+  grafana:
+    image: "grafana/grafana:7.4.3"
+    volumes:
+      - grafana:/var/lib/mysql/data
+    ports:
+      - "3000:3000"
+    links:
+      - influxdb
+  influxdb:
+    image: "influxdb:1.8.4"
+    volumes:
+      - influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=influxdb
+      - INFLUXDB_ADMIN_PASSWORD=influxdb
+      - INFLUXDB_ADMIN_USER=influxdb
+volumes:
+  nodered:
+  influxdb:
+  grafana:
