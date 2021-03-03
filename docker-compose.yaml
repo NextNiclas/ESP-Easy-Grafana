@@ -3,12 +3,14 @@ services:
   mosquitto:
     build: ./container/mosquitto
     image: mosquitto:custom
+    restart: always
     ports:
       - "1883:1883"
       - "9001:9001"
   nodered:
     build: ./container/nodered
     image: "nodered:custom"
+    restart: always
     environment:
       - NODE_RED_CREDENTIAL_SECRET=my_secret_to_encrypt
     volumes:
@@ -20,14 +22,16 @@ services:
       - mosquitto
   grafana:
     image: "grafana/grafana:7.4.3"
+    restart: always
     volumes:
-      - grafana:/var/lib/mysql/data
+      - grafana:/var/lib/grafana
     ports:
       - "3000:3000"
     links:
       - influxdb
   influxdb:
     image: "influxdb:1.8.4"
+    restart: always
     volumes:
       - influxdb:/var/lib/influxdb
     ports:
